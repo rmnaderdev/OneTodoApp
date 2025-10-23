@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TodoList {
+  id    String @id @default(cuid())
+  title String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deleted Boolean @default(false)
+
+  todoItems TodoItem[]
+
+  @@index([title])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([deleted])
+  @@map("todo_lists")
+}
+
+model TodoItem {
+  id     String @id @default(cuid())
+  listId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content   String
+  completed Boolean @default(false)
+  deleted   Boolean @default(false)
+
+  list TodoList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@index([listId])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@map("todo_items")
+}
