@@ -1,7 +1,11 @@
 import prisma from "@/lib/db";
 import TodoItem from "./TodoItem";
 
-export default async function TodoList() {
+type Props = {
+	userId: string;
+};
+
+export default async function TodoList({ userId }: Props) {
   const todos = await prisma.todoItem.findMany({
     where: { deleted: false },
     orderBy: { createdAt: "desc" },

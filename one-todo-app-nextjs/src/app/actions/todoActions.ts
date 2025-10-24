@@ -1,9 +1,20 @@
 'use server';
 
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function addTodo(formData: FormData) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!session) {
+    throw new NextResponse('Unauthorized', { status: 401 });
+  }
+
   const content = formData.get('content') as string;
 
   if (!content || content.trim() === "") {
@@ -13,7 +24,7 @@ export async function addTodo(formData: FormData) {
   const defaultList = await prisma.todoList.upsert({
     where: { id: 'default' },
     update: {},
-    create: { id: 'default', title: 'Default List' },
+    create: { id: 'default', title: 'Default List', userId: session.user.id },
   });
 
   await prisma.todoItem.create({
@@ -28,13 +39,21 @@ export async function addTodo(formData: FormData) {
 }
 
 export async function toggleTodo(formData: FormData) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!session) {
+    throw new NextResponse('Unauthorized', { status: 401 });
+  }
+
   const id = formData.get('id') as string;
   const completed = formData.get('completed') === 'true';
 
   console.log('Toggling todo:', { id, completed });
 
   await prisma.todoItem.update({
-    where: { id },
+    where: { id, list: { userId: session.user.id } },
     data: {
       completed,
     },
@@ -44,12 +63,21 @@ export async function toggleTodo(formData: FormData) {
 }
 
 export async function deleteTodo(formData: FormData) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!session) {
+    throw new NextResponse('Unauthorized', { status: 401 });
+  }
+
   const id = formData.get('id') as string;
   await prisma.todoItem.update({
-    where: { id },
+    where: { id, list: { userId: session.user.id } },
     data: {
       deleted: true,
     },
   });
+  
   revalidatePath('/');
 }
