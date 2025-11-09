@@ -1,5 +1,6 @@
 import prisma from "@/lib/db";
 import TodoItem from "./TodoItem";
+import { List, Typography, Box } from "@mui/material";
 
 type Props = {
 	userId: string;
@@ -12,14 +13,20 @@ export default async function TodoList({ userId }: Props) {
   });
 
 	return (
-		<div className="flex flex-col gap-2">
+		<Box>
 			{todos.length === 0 ? (
-				<div className="text-gray-400 text-center py-4">No todos yet.</div>
+				<Box sx={{ textAlign: 'center', py: 4 }}>
+					<Typography color="text.secondary">
+						No todos yet. Add one above!
+					</Typography>
+				</Box>
 			) : (
-        todos.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} />
-        ))
+				<List>
+					{todos.map((todo) => (
+						<TodoItem key={todo.id} todo={todo} />
+					))}
+				</List>
 			)}
-		</div>
+		</Box>
 	);
 }

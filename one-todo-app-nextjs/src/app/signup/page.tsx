@@ -1,5 +1,14 @@
 'use client';
 import { authClient } from "@/lib/auth-client";
+import { 
+  Button, 
+  TextField, 
+  Container, 
+  Paper, 
+  Box, 
+  Typography,
+  Alert
+} from "@mui/material";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FormEvent, useState } from "react";
@@ -31,48 +40,61 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <div className="w-full max-w-sm rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">Signup</h1>
-        <form onSubmit={signup} className="flex flex-col gap-4">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            className="rounded border px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="rounded border px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="rounded border px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <button
-            type="submit"
-            className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Login
-          </button>
-          {errorMessage && (
-            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
-          )}
-          <Link href="/signup" className="text-sm text-blue-600 hover:underline mt-4 text-center">
-            Don&apos;t have an account? Sign up
-          </Link>
-        </form>
-      </div>
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ py: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 'calc(100vh - 64px)', justifyContent: 'center' }}>
+        <Paper elevation={3} sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 400 }}>
+          <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+            Sign Up
+          </Typography>
+          
+          <Box component="form" onSubmit={signup} sx={{ width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            
+            {errorMessage && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {errorMessage}
+              </Alert>
+            )}
+            
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Sign Up
+            </Button>
+            
+            <Box textAlign="center">
+              <Link href="/login">
+                <Typography variant="body2" color="primary" sx={{ cursor: 'pointer' }}>
+                  Already have an account? Sign In
+                </Typography>
+              </Link>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 }

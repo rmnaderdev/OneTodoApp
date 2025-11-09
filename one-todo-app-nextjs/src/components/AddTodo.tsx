@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { TextField, Button, Box } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 export type AddTodoProps = {
   addTodoAction: (formData: FormData) => Promise<void>;
@@ -17,24 +19,17 @@ export default function AddTodo({ addTodoAction }: AddTodoProps) {
   };
 
   return (
-    <form
-      className="flex w-full gap-2 mb-6"
-      onSubmit={handleSubmit}
-    >
-      <input
-        type="text"
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <TextField
         name="content"
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Add a new todo..."
-        className="flex-1 rounded border px-3 py-2 text-base"
+        fullWidth
       />
-      <button
-        type="submit"
-        className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 transition-colors"
-      >
+      <Button type="submit" variant="contained" startIcon={<Add />}>
         Add
-      </button>
-    </form>
+      </Button>
+    </Box>
   );
 }
