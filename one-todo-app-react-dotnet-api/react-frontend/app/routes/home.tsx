@@ -1,6 +1,8 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useForecastQuery } from "~/api/useForecastQuery";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,29 +12,11 @@ export function meta({}: Route.MetaArgs) {
 }
 
 // Example API response type
-type WeatherForecast = {
-  data: string;
-  summary: string;
-  temperatureC: number;
-  temperatureF: number;
-};
 
 export default function Home() {
-  const [forecast, setForecast] = useState<WeatherForecast[] | null>(null);
+  const forecastQuery = useForecastQuery();
 
-  useEffect(() => {
-    getTodos();
-  }, []);
-
-  const getTodos = async () => {
-    const url = new URL("/weatherforecast", import.meta.env.VITE_API_HOST);
-    const res = await fetch(url, { headers: { accept: "application/json" } });
-    console.log("API Response Status:", res);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch todos: ${res.statusText}`);
-    }
-    setForecast((await res.json()) as WeatherForecast[]);
-  };
+  const forecast = forecastQuery.data;
 
   return (
     <>
