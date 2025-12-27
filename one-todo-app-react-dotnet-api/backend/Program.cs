@@ -28,7 +28,7 @@ namespace Backend
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<AppDbContext>(options => 
-                options.UseInMemoryDatabase("OneTodoDb"));
+                options.UseSqlite("Data Source=database.db"));
 
             var app = builder.Build();
 
@@ -46,6 +46,13 @@ namespace Backend
 
 
             app.MapControllers();
+
+            // Run migrations
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.Migrate();
+            }
 
             // Seed database
             using (var scope = app.Services.CreateScope())
