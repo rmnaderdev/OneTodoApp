@@ -2,6 +2,7 @@
 using Backend.Data;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Backend
 {
@@ -47,28 +48,35 @@ namespace Backend
 
             app.MapControllers();
 
-            // Run migrations
-            using (var scope = app.Services.CreateScope())
+            // Only run migrations when running the app (not during build openapi gen)
+            if (Assembly.GetEntryAssembly()?.GetName().Name != "GetDocument.Insider")
             {
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                db.Database.Migrate();
-            }
-
-            // Seed database
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                if (!db.TodoItems.Any())
+                // Run migrations
+                using (var scope = app.Services.CreateScope())
                 {
-                    db.TodoItems.AddRange(
-                        new TodoItem { Title = "Learn C# 14.0" },
-                        new TodoItem { Title = "Build an ASP.NET Core app" },
-                        new TodoItem { Title = "Explore new features in .NET 10" }
-                    );
-                    db.SaveChanges();
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    db.Database.Migrate();
+                }
+
+                // Seed database
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    if (!db.TodoLists.Any() && !db.TodoItems.Any())
+                    {
+                        var newList = new TodoList { Name = "My First Todo List" };
+                        db.TodoLists.Add(newList);
+                        db.SaveChanges();
+
+                        db.TodoItems.AddRange(
+                            new TodoItem { TodoListId = newList.Id, Title = "Learn C# 14.0" },
+                            new TodoItem { TodoListId = newList.Id, Title = "Build an ASP.NET Core app" },
+                            new TodoItem { TodoListId = newList.Id, Title = "Explore new features in .NET 10" }
+                        );
+                        db.SaveChanges();
+                    }
                 }
             }
-
 
             app.Run();
         }

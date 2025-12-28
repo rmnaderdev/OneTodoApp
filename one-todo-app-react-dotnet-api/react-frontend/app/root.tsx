@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { client } from "./api/generated/client.gen";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -41,6 +42,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
+
+// Initialize the OpenAPI client base URL from Vite env
+client.setConfig({ baseUrl: import.meta.env.VITE_API_BASE_URL });
 
 const queryClient = new QueryClient();
 

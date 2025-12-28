@@ -1,33 +1,19 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { NewTodoItem, useApiClient, type INewTodoItem } from "..";
+import { createTodoItemMutation, deleteTodoItemMutation, getTodosOptions, updateTodoItemMutation } from "../generated/@tanstack/react-query.gen";
 
 export const useTodos = () => {
-  const api = useApiClient();
-
   return {
     getTodos: () => useQuery({
-      queryKey: ["todos"],
-      queryFn: async () => {
-        return await api.getTodos();
-      },
+      ...getTodosOptions()
     }),
     createTodo: () => useMutation({
-      mutationKey: ["createTodo"],
-      mutationFn: async (newTodo: INewTodoItem) => {
-        return await api.createTodoItem(new NewTodoItem(newTodo));
-      },
+      ...createTodoItemMutation()
     }),
     updateTodo: () => useMutation({
-      mutationKey: ["updateTodo"],
-      mutationFn: async ({ id, todo }: { id: number; todo: INewTodoItem }) => {
-        return await api.updateTodoItem(id, new NewTodoItem(todo));
-      },
+      ...updateTodoItemMutation()
     }),
     deleteTodo: () => useMutation({
-      mutationKey: ["deleteTodo"],
-      mutationFn: async (id: number) => {
-        return await api.deleteTodoItem(id);
-      },
+      ...deleteTodoItemMutation()
     }),
   }
 };

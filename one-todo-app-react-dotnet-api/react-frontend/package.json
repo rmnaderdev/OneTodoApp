@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npm run codegen:nswag && react-router build",
-    "dev": "npm run codegen:nswag && react-router dev",
+    "build": "npm run codegen && react-router build",
+    "dev": "npm run codegen && react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "codegen:nswag": "nswag run nswag.json"
+    "codegen": "openapi-ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -23,6 +23,7 @@
     "react-router": "7.10.1"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "0.89.2",
     "@react-router/dev": "7.10.1",
     "@tailwindcss/vite": "^4.1.13",
     "@types/node": "^22",

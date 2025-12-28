@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { NewTodoItem } from "../api";
 import styled from "@emotion/styled";
 import { useTodos } from "~/api/hooks/useTodos";
 
@@ -20,7 +19,7 @@ export const AddTodoItem = () => {
     setError("");
 
     try {
-      await createMutation.mutateAsync(new NewTodoItem({ title, isCompleted: false }));
+      await createMutation.mutateAsync({ body: { title } });
       await todosQuery.refetch();
       setTitle("");
     } catch (err) {

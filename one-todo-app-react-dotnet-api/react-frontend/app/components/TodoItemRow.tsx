@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import type { TodoItem } from "~/api";
 import { Trash } from "react-feather";
 import { useTodos } from "~/api/hooks/useTodos";
+import type { TodoItem } from "~/api/generated";
 
 type Props = {
   todo: TodoItem;
@@ -31,14 +31,19 @@ export const TodoItemRow = ({ todo }: Props) => {
 
   const handleToggleTodo = async (todo: TodoItem) => {
     await updateTodoMutation.mutateAsync({
-      id: todo.id!,
-      todo: { title: todo.title, isCompleted: !todo.isCompleted },
+      path: { id: todo.id! },
+      body: {
+        title: todo.title!,
+        isCompleted: !todo.isCompleted,
+      }
     });
     await todosQuery.refetch();
   };
 
   const onDeleteTodo = async (todo: TodoItem) => {
-    await deleteTodoMutation.mutateAsync(todo.id!);
+    await deleteTodoMutation.mutateAsync({
+      path: { id: todo.id! }
+    });
     await todosQuery.refetch();
   };
 

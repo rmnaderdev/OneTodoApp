@@ -24,8 +24,11 @@ namespace Backend.Controllers
         [HttpPost(Name = "CreateTodoItem")]
         public async Task<ActionResult<TodoItem>> CreateTodoItem(NewTodoItem newTodoItem)
         {
+            var firstList = await db.TodoLists.FirstOrDefaultAsync();
+
             var todoItem = new TodoItem
             {
+                TodoListId = firstList?.Id ?? 0,
                 Title = newTodoItem.Title,
                 IsCompleted = newTodoItem.IsCompleted ?? false
             };

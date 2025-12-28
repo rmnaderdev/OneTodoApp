@@ -1,6 +1,5 @@
 import type { Route } from "./+types/home";
 import { useTodos } from "~/api/hooks/useTodos";
-import type { TodoItem } from "~/api";
 import { TodoItemRow } from "~/components/TodoItemRow";
 import { AddTodoItem } from "~/components/AddTodoItem";
 
@@ -10,8 +9,6 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
-
-// Example API response type
 
 export default function Home() {
   const { getTodos } = useTodos();

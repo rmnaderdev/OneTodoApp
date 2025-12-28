@@ -1,23 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>20d03054-c8cb-4196-a43d-ec9f70ce2143</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
-  </PropertyGroup>
+		<PropertyGroup>
+				<TargetFramework>net10.0</TargetFramework>
+				<Nullable>enable</Nullable>
+				<ImplicitUsings>enable</ImplicitUsings>
+				<UserSecretsId>20d03054-c8cb-4196-a43d-ec9f70ce2143</UserSecretsId>
+				<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+				<DockerfileContext>.</DockerfileContext>
+				<OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
+		</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
-  </ItemGroup>
+		<ItemGroup>
+				<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+				<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+						<PrivateAssets>all</PrivateAssets>
+						<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+				</PackageReference>
+				<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+				<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+				<PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.1">
+				  <PrivateAssets>all</PrivateAssets>
+				  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+				</PackageReference>
+				<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+		</ItemGroup>
 
 </Project>
