@@ -9,8 +9,9 @@ namespace Backend.Models
         public int Id { get; set; }
 
         public int TodoListId { get; set; }
+
         [ForeignKey("TodoListId")]
-        public TodoList? TodoList { get; set; }
+        public TodoList TodoList { get; set; } = null!;
 
         [MaxLength(100)]
         public required string Title { get; set; }

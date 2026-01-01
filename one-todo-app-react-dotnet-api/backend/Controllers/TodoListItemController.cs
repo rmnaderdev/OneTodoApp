@@ -8,39 +8,45 @@ namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TodosController(AppDbContext db) : ControllerBase
+    public class TodoListItemController(AppDbContext db) : ControllerBase
     {
 
-        [HttpGet(Name = "GetTodos")]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> Get()
+        [HttpGet("{listId:int}", Name = "GetTodos")]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> Get(int listId)
         {
             var todos = await db.TodoItems
+                .Where(t => t.TodoListId == listId)
                 .AsNoTracking()
                 .ToListAsync();
 
             return Ok(todos);
         }
 
-        [HttpPost(Name = "CreateTodoItem")]
-        public async Task<ActionResult<TodoItem>> CreateTodoItem(NewTodoItem newTodoItem)
+        [HttpPost("{listId:int}", Name = "CreateTodoItem")]
+        public async Task<ActionResult<TodoItem>> CreateTodoItem(int listId, NewTodoItem newTodoItem)
         {
-            var firstList = await db.TodoLists.FirstOrDefaultAsync();
+            var listRecord = await db.TodoLists.FirstOrDefaultAsync(x => x.Id == listId);
+            if (listRecord == null)
+            {
+                return NotFound();
+            }
 
             var todoItem = new TodoItem
             {
-                TodoListId = firstList?.Id ?? 0,
+                TodoListId = listRecord.Id,
                 Title = newTodoItem.Title,
                 IsCompleted = newTodoItem.IsCompleted ?? false
             };
             db.TodoItems.Add(todoItem);
             await db.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(todoItem);
         }
 
-        [HttpPut("{id}", Name = "UpdateTodoItem")]
-        public async Task<ActionResult> UpdateTodoItem(int id, NewTodoItem updatedTodoItem)
+        [HttpPut("{listItemId:int}", Name = "UpdateTodoItem")]
+        public async Task<ActionResult> UpdateTodoItem(int listItemId, NewTodoItem updatedTodoItem)
         {
-            var todoItem = await db.TodoItems.FindAsync(id);
+            var todoItem = await db.TodoItems.FindAsync(listItemId);
             if (todoItem == null)
             {
                 return NotFound();
@@ -48,13 +54,13 @@ namespace Backend.Controllers
             todoItem.Title = updatedTodoItem.Title;
             todoItem.IsCompleted = updatedTodoItem.IsCompleted ?? todoItem.IsCompleted;
             await db.SaveChangesAsync();
-            return NoContent();
+            return Ok(todoItem);
         }
 
-        [HttpDelete("{id}", Name = "DeleteTodoItem")]
-        public async Task<ActionResult> DeleteTodoItem(int id)
+        [HttpDelete("{listItemId:int}", Name = "DeleteTodoItem")]
+        public async Task<ActionResult> DeleteTodoItem(int listItemId)
         {
-            var todoItem = await db.TodoItems.FindAsync(id);
+            var todoItem = await db.TodoItems.FindAsync(listItemId);
             if (todoItem == null)
             {
                 return NotFound();

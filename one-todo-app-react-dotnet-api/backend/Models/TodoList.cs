@@ -10,6 +10,6 @@ namespace Backend.Models
         [MaxLength(100)]
         public required string Name { get; set; }
 
-        public List<TodoItem> Items { get; set; } = new();
+        public ICollection<TodoItem> Items { get; set; } = new List<TodoItem>();
     }
 }

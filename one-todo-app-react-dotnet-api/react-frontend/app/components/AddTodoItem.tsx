@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "@emotion/styled";
 import { useTodos } from "~/api/hooks/useTodos";
 
 export const AddTodoItem = () => {
@@ -7,7 +6,7 @@ export const AddTodoItem = () => {
   const [error, setError] = useState("");
 
   const { getTodos, createTodo } = useTodos();
-  const todosQuery = getTodos();
+  const todosQuery = getTodos({ listId: 1 });
   const createMutation = createTodo();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,7 +18,7 @@ export const AddTodoItem = () => {
     setError("");
 
     try {
-      await createMutation.mutateAsync({ body: { title } });
+      await createMutation.mutateAsync({ path: { listId: 1 }, body: { title } });
       await todosQuery.refetch();
       setTitle("");
     } catch (err) {
@@ -29,19 +28,26 @@ export const AddTodoItem = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-2 w-full">
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Enter todo title"
+        className={`flex-1 rounded-lg border px-4 py-2 text-primary bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all ${error ? 'border-red-400' : 'border-primary/30'}`}
+        aria-label="Todo title"
       />
-      <button type="submit">Add Todo</button>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <button
+        type="submit"
+        className="rounded-lg bg-primary cursor-pointer hover:bg-accent text-white font-semibold px-5 py-2 shadow-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        disabled={!title.trim()}
+      >
+        Add Todo
+      </button>
+      {error && (
+        <span className="text-red-500 text-sm mt-1 sm:mt-0 sm:ml-2 self-start">{error}</span>
+      )}
     </form>
   );
 };
 
-const ErrorMessage = styled.p`
-  color: red;
-`;

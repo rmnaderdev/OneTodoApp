@@ -5,12 +5,93 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/Todos": {
+    "/api/TodoList": {
       "get": {
         "tags": [
-          "Todos"
+          "TodoList"
+        ],
+        "operationId": "GetTodoLists",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TodoList"
+        ],
+        "operationId": "CreateTodoList",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTodoList"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTodoList"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTodoList"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TodoList/{listId}": {
+      "delete": {
+        "tags": [
+          "TodoList"
+        ],
+        "operationId": "DeleteTodoList",
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/TodoListItem/{listId}": {
+      "get": {
+        "tags": [
+          "TodoListItem"
         ],
         "operationId": "GetTodos",
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -45,9 +126,21 @@
       },
       "post": {
         "tags": [
-          "Todos"
+          "TodoListItem"
         ],
         "operationId": "CreateTodoItem",
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -92,23 +185,20 @@
         }
       }
     },
-    "/api/Todos/{id}": {
+    "/api/TodoListItem/{listItemId}": {
       "put": {
         "tags": [
-          "Todos"
+          "TodoListItem"
         ],
         "operationId": "UpdateTodoItem",
         "parameters": [
           {
-            "name": "id",
+            "name": "listItemId",
             "in": "path",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -141,20 +231,17 @@
       },
       "delete": {
         "tags": [
-          "Todos"
+          "TodoListItem"
         ],
         "operationId": "DeleteTodoItem",
         "parameters": [
           {
-            "name": "id",
+            "name": "listItemId",
             "in": "path",
             "required": true,
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": [
-                "integer",
-                "string"
-              ],
+              "type": "integer",
               "format": "int32"
             }
           }
@@ -186,6 +273,17 @@
           }
         }
       },
+      "NewTodoList": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "TodoItem": {
         "required": [
           "title"
@@ -209,14 +307,7 @@
             "format": "int32"
           },
           "todoList": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/TodoList"
-              }
-            ]
+            "$ref": "#/components/schemas/TodoList"
           },
           "title": {
             "maxLength": 100,
@@ -260,7 +351,10 @@
   },
   "tags": [
     {
-      "name": "Todos"
+      "name": "TodoList"
+    },
+    {
+      "name": "TodoListItem"
     }
   ]
 }
