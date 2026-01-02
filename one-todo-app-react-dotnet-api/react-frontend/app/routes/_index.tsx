@@ -1,20 +1,22 @@
-import type { Route } from "./+types/home";
-import { useTodos } from "~/api/hooks/useTodos";
+import type { Route } from "./+types/_index";
 import { TodoItemRow } from "~/components/TodoItemRow";
 import { AddTodoItem } from "~/components/AddTodoItem";
 import { CheckCircle } from "react-feather";
+import { useTodo } from "~/api/hooks/useTodos";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "OneTodo App" },
+    { name: "description", content: "Welcome to One Todo app." },
   ];
 }
 
-export default function Home() {
-  const { getTodos } = useTodos();
+export default function Page() {
+  const { getTodoLists } = useTodo();
 
-  const todosQuery = getTodos({ listId: 1 });
+  const todosQuery = getTodoLists();
+
+  // TODO: List todo lists
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-primary/10 flex items-center justify-center">
@@ -24,17 +26,6 @@ export default function Home() {
             <CheckCircle className="text-primary" />
             Todos
           </h2>
-          <div className="mb-6">
-            <AddTodoItem />
-          </div>
-          <span className="text-sm text-gray-500 mb-4 block">
-            (Hold <kbd className="border border-gray-300 rounded px-1 py-0.5 bg-gray-100">Ctrl</kbd> to show delete buttons)
-          </span>
-          <ul className="space-y-3">
-            {todosQuery.data.map((todo) => (
-              <TodoItemRow key={todo.id} todo={todo} />
-            ))}
-          </ul>
         </div>
       ) : (
         <div className="text-center text-primary text-lg font-medium animate-pulse">Loading Todos...</div>
