@@ -11,17 +11,6 @@ namespace Backend.Controllers
     public class TodoListItemController(AppDbContext db) : ControllerBase
     {
 
-        [HttpGet("{listId:int}", Name = "GetTodos")]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> Get(int listId)
-        {
-            var todos = await db.TodoItems
-                .Where(t => t.TodoListId == listId)
-                .AsNoTracking()
-                .ToListAsync();
-
-            return Ok(todos);
-        }
-
         [HttpPost("{listId:int}", Name = "CreateTodoItem")]
         public async Task<ActionResult<TodoItem>> CreateTodoItem(int listId, NewTodoItem newTodoItem)
         {
@@ -44,13 +33,17 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{listItemId:int}", Name = "UpdateTodoItem")]
-        public async Task<ActionResult> UpdateTodoItem(int listItemId, NewTodoItem updatedTodoItem)
+        public async Task<ActionResult> UpdateTodoItem(int listId, int listItemId, NewTodoItem updatedTodoItem)
         {
-            var todoItem = await db.TodoItems.FindAsync(listItemId);
+            var todoItem = await db.TodoItems
+                .Include(x => x.TodoList)
+                .FirstOrDefaultAsync(x => x.Id == listItemId);
+
             if (todoItem == null)
             {
                 return NotFound();
             }
+
             todoItem.Title = updatedTodoItem.Title;
             todoItem.IsCompleted = updatedTodoItem.IsCompleted ?? todoItem.IsCompleted;
             await db.SaveChangesAsync();

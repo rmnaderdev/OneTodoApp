@@ -1,23 +1,22 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createTodoItemMutation, deleteTodoItemMutation, getTodosOptions, updateTodoItemMutation } from "../generated/@tanstack/react-query.gen";
+import { createTodoListMutation, deleteTodoListMutation, getTodoListByIdOptions, getTodoListsOptions } from "../generated/@tanstack/react-query.gen";
+import { getTodoListById, type DeleteTodoListData } from "../generated";
 
-export const useTodoList = ({ listId }: { listId: number }) => {
+export const useTodoList = () => {
   return {
-    getTodos: () => useQuery({
-      ...getTodosOptions({ 
-        path: { listId },
+    getTodoLists: () => useQuery({
+      ...getTodoListsOptions()
+    }),
+    getTodoListById: (options: Parameters<typeof getTodoListById>[0]) => useQuery({
+      ...getTodoListByIdOptions(options)
+    }),
+    createTodoList: () => useMutation({
+      ...createTodoListMutation()
+    }),
+    deleteTodoList: (path: DeleteTodoListData['path'] ) => useMutation({
+      ...deleteTodoListMutation({
+        path
       })
-    }),
-    createTodo: () => useMutation({
-      ...createTodoItemMutation({
-        path: { listId },
-      })
-    }),
-    updateTodo: () => useMutation({
-      ...updateTodoItemMutation()
-    }),
-    deleteTodo: () => useMutation({
-      ...deleteTodoItemMutation()
-    }),
+    })
   }
 };

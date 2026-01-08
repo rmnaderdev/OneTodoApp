@@ -1,8 +1,7 @@
 import type { Route } from "./+types/_index";
-import { TodoItemRow } from "~/components/TodoItemRow";
-import { AddTodoItem } from "~/components/AddTodoItem";
 import { CheckCircle } from "react-feather";
-import { useTodo } from "~/api/hooks/useTodos";
+import { useTodoList } from "~/api/hooks/useTodoList";
+import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,7 +11,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Page() {
-  const { getTodoLists } = useTodo();
+  const { getTodoLists } = useTodoList();
 
   const todosQuery = getTodoLists();
 
@@ -26,6 +25,13 @@ export default function Page() {
             <CheckCircle className="text-primary" />
             Todos
           </h2>
+          <ul className="space-y-3">
+            {todosQuery.data.map((todoList) => (
+              <li key={todoList.id} className="text-primary text-base">
+                <Link to={`/${todoList.id}`} className="hover:underline">{todoList.name}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
       ) : (
         <div className="text-center text-primary text-lg font-medium animate-pulse">Loading Todos...</div>

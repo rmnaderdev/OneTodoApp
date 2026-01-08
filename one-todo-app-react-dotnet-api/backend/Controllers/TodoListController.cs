@@ -11,15 +11,28 @@ namespace Backend.Controllers
     public class TodoListController(AppDbContext db) : ControllerBase
     {
         [HttpGet(Name = "GetTodoLists")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult<IEnumerable<TodoList>>> Get()
         {
             var todoLists = await db.TodoLists.ToListAsync();
 
             return Ok(todoLists);
         }
 
+        [HttpGet("{listId:int}", Name = "GetTodoListById")]
+        public async Task<ActionResult<TodoList>> GetById(int listId)
+        {
+            var todoList = await db.TodoLists
+                .Include(tl => tl.Items)
+                .FirstOrDefaultAsync(tl => tl.Id == listId);
+            if (todoList == null)
+            {
+                return NotFound();
+            }
+            return Ok(todoList);
+        }
+
         [HttpPost(Name = "CreateTodoList")]
-        public async Task<ActionResult> Create(NewTodoList newTodoList)
+        public async Task<ActionResult<TodoList>> Create(NewTodoList newTodoList)
         {
             var todoList = new TodoList
             {
@@ -43,5 +56,6 @@ namespace Backend.Controllers
             await db.SaveChangesAsync();
             return NoContent();
         }
+
     }
 }

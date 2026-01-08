@@ -1,9 +1,10 @@
 import type { Route } from "./+types/$listId";
-import { TodoItemRow } from "~/components/TodoItemRow";
 import { AddTodoItem } from "~/components/AddTodoItem";
 import { CheckCircle } from "react-feather";
+import { GetTodosListItemsContext } from "~/containers/GetTodosListContextProvider";
+import { Link } from "react-router";
 import { useTodoList } from "~/api/hooks/useTodoList";
-import { GetTodosListContext } from "~/containers/GetTodosListContextProvider";
+import { TodoItemRow } from "~/components/TodoItemRow";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,21 +20,25 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 export default function Page({ loaderData }: Route.ComponentProps) {
   const { listId } = loaderData;
 
-  const useTodoListApi = useTodoList({ listId });
-  const { getTodos } = useTodoListApi;
+  
+  const useTodoListApi = useTodoList();
+  const { getTodoListById } = useTodoListApi;
 
-  const todosQuery = getTodos();
+  const todosQuery = getTodoListById({ path: { listId } });
 
   // TODO: List todo lists
 
   return (
-    <GetTodosListContext.Provider value={useTodoListApi}>
+    <GetTodosListItemsContext.Provider value={useTodoListApi}>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-primary/10 flex items-center justify-center">
+
+        <Link to="/" className="absolute top-4 left-4 text-primary hover:underline">← Back to Lists</Link>
+      
         {todosQuery.data ? (
           <div className="w-full max-w-xl bg-white/90 shadow-xl rounded-2xl p-8 border border-primary/20">
             <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
               <CheckCircle className="text-primary" />
-              Todos
+              {}
             </h2>
             <div className="mb-6">
               <AddTodoItem />
@@ -46,7 +51,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
               to show delete buttons)
             </span>
             <ul className="space-y-3">
-              {todosQuery.data.map((todo) => (
+              {todosQuery.data.items?.map((todo) => (
                 <TodoItemRow key={todo.id} todo={todo} />
               ))}
             </ul>
@@ -57,6 +62,6 @@ export default function Page({ loaderData }: Route.ComponentProps) {
           </div>
         )}
       </div>
-    </GetTodosListContext.Provider>
+    </GetTodosListItemsContext.Provider>
   );
 }

@@ -1,14 +1,14 @@
 import { createContext, useContext } from "react"
-import type { useTodoList } from "~/api/hooks/useTodoList"
+import type { useTodoListItems } from "~/api/hooks/useTodoListItems"
 
-type GetTodosListContextType = ReturnType<typeof useTodoList>;
+type GetTodosListItemsContextType = ReturnType<typeof useTodoListItems>;
 
-export const GetTodosListContext = createContext<GetTodosListContextType | null>(null);
+export const GetTodosListItemsContext = createContext<GetTodosListItemsContextType | null>(null);
 
-export const useGetTodosListContext = () => {
-  const context = useContext(GetTodosListContext);
+export const useGetTodosListItemsContext = () => {
+  const context = useContext(GetTodosListItemsContext);
   if (!context) {
-    throw new Error("useGetTodosListContext must be used within a GetTodosListContextProvider");
+    throw new Error("useGetTodosListItemsContext must be used within a GetTodosListItemsContextProvider");
   }
   return context;
 };

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Trash, CheckCircle, Circle } from "react-feather";
 import type { TodoItem } from "~/api/generated";
-import { useGetTodosListContext } from "~/containers/GetTodosListContextProvider";
+import { useTodoList } from "~/api/hooks/useTodoList";
+import { useGetTodosListItemsContext } from "~/containers/GetTodosListContextProvider";
 
 type Props = {
   todo: TodoItem;
@@ -10,8 +11,9 @@ type Props = {
 export const TodoItemRow = ({ todo }: Props) => {
   const [showDelete, setShowDelete] = useState(false);
 
-  const { deleteTodo, getTodos, updateTodo } = useGetTodosListContext();
-  const todosQuery = getTodos();
+  const { getTodoListById } = useTodoList();
+  const { deleteTodo, updateTodo } = useGetTodosListItemsContext();
+  const todosQuery = getTodoListById({ path: { listId: Number(todo.id!) } });
   const updateTodoMutation = updateTodo();
   const deleteTodoMutation = deleteTodo();
 

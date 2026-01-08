@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { useGetTodosListContext } from "~/containers/GetTodosListContextProvider";
+import { useTodoList } from "~/api/hooks/useTodoList";
+import { useGetTodosListItemsContext } from "~/containers/GetTodosListContextProvider";
 
 export const AddTodoItem = () => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
 
-  const { getTodos, createTodo } = useGetTodosListContext();
-  const todosQuery = getTodos();
+  const { getTodoListById } = useTodoList();
+  const { createTodo } = useGetTodosListItemsContext();
+  const todosQuery = getTodoListById();
   const createMutation = createTodo();
 
   const handleSubmit = async (e: React.FormEvent) => {
